@@ -2,6 +2,8 @@
 
 This is a simple Obsidian plugin designed to assist you in taking notes for your literature. Adapted from this [repository](https://github.com/wilmerwang/autoLiterature).
 
+Welcome any suggestions.
+
 ## How to use
 
 This plugin has not been included in the official list yet, so it needs to be cloned locally for usage.
