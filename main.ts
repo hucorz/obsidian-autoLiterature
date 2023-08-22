@@ -12,7 +12,7 @@ const DEFAULT_SETTINGS: MyPluginSettings = {
 	mySetting: 'default'
 }
 
-export default class MyPlugin extends Plugin {
+export default class AutoLiter extends Plugin {
 	settings: MyPluginSettings;
 
 	async onload() {
@@ -55,22 +55,6 @@ export default class MyPlugin extends Plugin {
 			})
 			return data;
 		})
-	}
-}
-
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
-
-	onOpen() {
-		const {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
-
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
 	}
 }
 
