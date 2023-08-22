@@ -9,8 +9,14 @@ class PatternRecognizer {
         return input.match(this.pattern);
     }
 
-    findAll(input: string): RegExpMatchArray {
-        return input.match(this.pattern) || [];
+    findAll(input: string): RegExpExecArray[] {
+        const matches: RegExpExecArray[] = [];
+        let match: RegExpExecArray | null;
+      
+        while ((match = this.pattern.exec(input)) !== null) {
+          matches.push(match);
+        }
+        return matches;
     }
 
     multipleReplace(content: string, replaceDict: { [key: string]: string }): string {

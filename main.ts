@@ -1,6 +1,9 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile} from 'obsidian';
-import PatternRecognizer from 'autoliter/PatternRecognizer';
-import {get_bib} from 'autoliter/utils'
+import * as fs from 'fs';
+import * as path from 'path';
+
+import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, Vault} from 'obsidian';
+import PatternRecognizer from 'autoliter/patternRecognizer';
+import {getReplaceDcit} from 'autoliter/utils'
 
 // Remember to rename these classes and interfaces!
 
@@ -17,31 +20,23 @@ export default class MyPlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
-		const paperRecognizer = new PatternRecognizer(/- \{.{3,}\}/);
+		const paperRecognizer = new PatternRecognizer(/- \{.{3,}\}/g); // g is must
 
 		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('dice', 'AutoLiter', (evt: MouseEvent) => {
+		const ribbonIconEl = this.addRibbonIcon('book-down', 'AutoLiter', async (evt: MouseEvent) => {
 			// Called when the user clicks the icon.
-			new Notice('start updating vault');
-
+			const notice = new Notice('start updating vault.');
+			
 			const files = this.app.vault.getMarkdownFiles()
 
+			const tasks: Promise<void>[] = [];
 			for (let i = 0; i < files.length; i++) {
-				this.updateLiter(files[i], paperRecognizer);
+				tasks.push(this.updateLiter(files[i], paperRecognizer));
 			}
-		});
+			await Promise.all(tasks);
+			new Notice("finish updating vault.");
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
-
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			console.log('click', evt);
-		});
-
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
+		});;
 	}
 
 	onunload() {
@@ -55,7 +50,26 @@ export default class MyPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	updateLiter(file: TFile, paperRecognizer: PatternRecognizer) {
+	async updateLiter(file: TFile, paperRecognizer: PatternRecognizer) {
+		const vaultBasePath = this.app.vault.adapter.basePath!;
+		const filePath = path.resolve(vaultBasePath, file.path)
+		const content = await fs.promises.readFile(filePath, { encoding: 'utf-8', flag: 'r' });
+	
+		const m = paperRecognizer.findAll(content);
+		
+		if (m.length != 0) {
+			const replaceDict = await getReplaceDcit(m, file);
+			this.update(this.app.vault, file, replaceDict);
+		}
+	}
+
+	update(vault: Vault, file: TFile, repalceDict: { [key: string]: string }): Promise<string> {
+		return vault.process(file, (data) => {
+			Object.keys(repalceDict).forEach( key => {
+				data = data.replace(key, repalceDict[key]);
+			})
+			return data;
+		})
 	}
 }
 
@@ -75,28 +89,3 @@ class SampleModal extends Modal {
 	}
 }
 
-class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
-
-	constructor(app: App, plugin: MyPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-	}
-
-	display(): void {
-		const {containerEl} = this;
-
-		containerEl.empty();
-
-		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
-				.onChange(async (value) => {
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
-	}
-}
