@@ -23,41 +23,30 @@ class Spider {
             return "medbiorxivId";
         } else if (identifier.match(/[0-9]{2}[0-1][0-9]\.[0-9]{3,}.*|.*\/[0-9]{2}[0-1][0-9]{4}/)) {
             return 'arxivId';
-        } else if (identifier.match(/[a-zA-Z\d\.-/\s]*/)) {
-            return 'title';
-        } else {
+        }else {
             return "unrecognized";
         }
     }
 
-    async getPaperInfo(paperID: string, literature: string): Promise<any>{
+    async getPaperInfo(paperID: string): Promise<any>{
         /*
-        paperID: the paper id
-        literature: the original string in the md file who's format is like '- {2022.12345}'
+        paperID: the paper id like 2022.12345
         */
         const id_type = this.classify(paperID);
-        let result = {};
         switch (id_type) {
             case 'arxivId':
-                result = await this.arxivInfo.getInfoByArxivId(paperID);
-                break;
+                return this.arxivInfo.getInfoByArxivId(paperID);
             case 'doi':
                 console.log("doi");
-                break;
+                // TODO: doi
+                return null;
             case 'medbiorxivId':
                 console.log("medbiorxivId");
-                break;
-            case 'title':
-                console.log("title");
-                break;
+                // TODO: medbiorxivId
+                return null;
             default:
-                throw new Error(`Unrecognized: ${literature}`);
+                return null;
         }
-        return {
-            literature,
-            result
-        }
-
     }
 }
 

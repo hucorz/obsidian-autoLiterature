@@ -1,9 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
-
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, Vault} from 'obsidian';
 import PatternRecognizer from 'autoliter/patternRecognizer';
-import {getReplaceDcit} from 'autoliter/utils'
+import {getReplaceDict} from 'autoliter/utils'
 
 // Remember to rename these classes and interfaces!
 
@@ -26,16 +23,8 @@ export default class MyPlugin extends Plugin {
 		const ribbonIconEl = this.addRibbonIcon('book-down', 'AutoLiter', async (evt: MouseEvent) => {
 			// Called when the user clicks the icon.
 			const notice = new Notice('start updating vault.');
-			
-			const files = this.app.vault.getMarkdownFiles()
-
-			const tasks: Promise<void>[] = [];
-			for (let i = 0; i < files.length; i++) {
-				tasks.push(this.updateLiter(files[i], paperRecognizer));
-			}
-			await Promise.all(tasks);
+			await Promise.all(this.app.vault.getMarkdownFiles().map(file => this.updateNote(file, paperRecognizer)));
 			new Notice("finish updating vault.");
-
 		});;
 	}
 
@@ -50,15 +39,11 @@ export default class MyPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	async updateLiter(file: TFile, paperRecognizer: PatternRecognizer) {
-		const vaultBasePath = this.app.vault.adapter.basePath!;
-		const filePath = path.resolve(vaultBasePath, file.path)
-		const content = await fs.promises.readFile(filePath, { encoding: 'utf-8', flag: 'r' });
-	
+	async updateNote(file: TFile, paperRecognizer: PatternRecognizer) {
+		const content = await this.app.vault.read(file);
 		const m = paperRecognizer.findAll(content);
-		
 		if (m.length != 0) {
-			const replaceDict = await getReplaceDcit(m, file);
+			const replaceDict = await getReplaceDict(m, file);
 			this.update(this.app.vault, file, replaceDict);
 		}
 	}
