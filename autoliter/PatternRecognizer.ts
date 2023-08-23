@@ -1,4 +1,4 @@
-class PatternRecognizer {
+class patternRecognizer {
     private pattern: RegExp;
 
     constructor(pattern: RegExp) {
@@ -20,4 +20,4 @@ class PatternRecognizer {
     }
 }
 
-export default PatternRecognizer;
+export default patternRecognizer;
