@@ -2,9 +2,11 @@ name: Release Obsidian plugin
 
 on:
   push:
-    tags:
-      - "*"
-
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
