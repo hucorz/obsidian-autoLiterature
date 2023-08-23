@@ -3,7 +3,7 @@
 	"name": "autoLiterature",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "This is a simple Obsidian plugin designed to assist you in taking notes for your literature. ",
+	"description": "This is a simple Obsidian plugin designed to assist you in taking notes for your literature.",
 	"author": "hucorz",
 	"authorUrl": "https://github.com/hucorz",
 	"fundingUrl": "https://obsidian.md/pricing",

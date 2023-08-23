@@ -1,7 +1,7 @@
 {
 	"name": "obsidian-autoLiterature",
-	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
+	"version": "1.0.1",
+	"description": "This is a simple Obsidian plugin designed to assist you in taking notes for your literature.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
@@ -9,7 +9,7 @@
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "hucorz",
 	"license": "MIT",
 	"devDependencies": {
 		"@types/node": "^16.11.6",
