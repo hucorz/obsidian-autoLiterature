@@ -42,7 +42,7 @@ export default class AutoLiter extends Plugin {
 	async updateNote(file: TFile, paperRecognizer: PatternRecognizer) {
 		const content = await this.app.vault.read(file);
 		const m = paperRecognizer.findAll(content);
-		if (m.length != 0) {
+		if (m && m.length != 0) {
 			const replaceDict = await getReplaceDict(m, file);
 			this.update(this.app.vault, file, replaceDict);
 		}
