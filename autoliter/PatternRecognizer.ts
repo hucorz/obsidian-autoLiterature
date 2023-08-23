@@ -9,7 +9,7 @@ class PatternRecognizer {
         return input.match(this.pattern);
     }
 
-    findAll(input: string): RegExpExecArray[] {
+    findAll(input: string): RegExpExecArray[] | null {
         const matches: RegExpExecArray[] = [];
         let match: RegExpExecArray | null;
       

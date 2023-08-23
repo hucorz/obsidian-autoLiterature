@@ -3,9 +3,10 @@
 	"name": "autoLiterature",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
+	"description": "This is a simple Obsidian plugin designed to assist you in taking notes for your literature. ",
+	"author": "hucorz",
+	"authorUrl": "https://github.com/hucorz",
 	"fundingUrl": "https://obsidian.md/pricing",
 	"isDesktopOnly": true
 }
+ 
