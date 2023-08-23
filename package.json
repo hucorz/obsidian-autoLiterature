@@ -1,7 +1,7 @@
 {
 	"name": "obsidian-autoLiterature",
-	"version": "1.0.1",
-	"description": "This is a simple Obsidian plugin designed to assist you in taking notes for your literature.",
+	"version": "1.0.6",
+	"description": "Assist you in taking notes for your literature.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",

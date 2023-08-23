@@ -1,12 +1,11 @@
 {
 	"id": "obsidian-autoLiterature",
 	"name": "autoLiterature",
-	"version": "1.0.0",
+	"version": "1.0.6",
 	"minAppVersion": "0.15.0",
-	"description": "This is a simple Obsidian plugin designed to assist you in taking notes for your literature.",
+	"description": "Assist you in taking notes for your literature.",
 	"author": "hucorz",
 	"authorUrl": "https://github.com/hucorz",
-	"fundingUrl": "https://obsidian.md/pricing",
 	"isDesktopOnly": true
 }
  
