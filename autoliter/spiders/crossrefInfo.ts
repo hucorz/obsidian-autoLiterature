@@ -16,7 +16,7 @@ class CrossrefInfo {
             const response = await axios.get(url);
             return this.extractInfo(response['data']['message']);
         } catch (error) {
-            throw new Error(`Error in getInfoByDoi: ${error}`);
+            throw new Error(`Error in getInfoByDoi: ${error.message}`);
         }
     }
 

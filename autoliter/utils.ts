@@ -21,7 +21,7 @@ async function getReplaceDict(m: RegExpExecArray[], file: TFile): Promise<{ [key
             paperInfo.id = paperID;
             return paperInfo;
         } catch (error) {
-            return {id: paperID, error: `Error in getPaperInfo: ${error}`};
+            return {id: paperID, error: `Error in getReplaceDict: ${error.message}`};
         }
     }));
     results.forEach((result: Dict) => {
@@ -32,7 +32,7 @@ async function getReplaceDict(m: RegExpExecArray[], file: TFile): Promise<{ [key
             replaceDict[origin_string] = `${origin_string} **${e}**`;
         } else {
             const {title, author, journal, pubDate, url} = result;
-            replaceDict[origin_string] = `- **${title}**. ${author} et.al. **${journal}**, **${pubDate}**. [link](${url})`
+            replaceDict[origin_string] = `- **${title}** ([link](${url}))\n\t- ${author} et.al.\n\t- **${journal}**\n\t- **${pubDate}**`
         }
     });
     progressNotice.setMessage(`Updating ${file.path}: ${total}/${total}`);

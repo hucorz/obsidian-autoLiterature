@@ -1,14 +1,17 @@
 import ArxivInfo from './arxivInfo';
 import CrossrefInfo from './crossrefInfo';
+import BMInfo from './bmInfo';
 import type { Dict } from 'autoliter/types';
 
 class Spider {
     arxivInfo: ArxivInfo;
     crossrefInfo: CrossrefInfo;
+    bmInfo: BMInfo;
 
     constructor() {
         this.arxivInfo = new ArxivInfo();
         this.crossrefInfo = new CrossrefInfo();
+        this.bmInfo = new BMInfo();
     }
     classify(identifier: string): string {
         /*    
@@ -33,8 +36,6 @@ class Spider {
         paperID: the paper id like 2022.12345
         */
         const id_type = this.classify(paperID);
-        console.log(paperID);
-        console.log(id_type);
         try {
             switch (id_type) {
                 case 'arxivId':
@@ -42,14 +43,12 @@ class Spider {
                 case 'doi':
                     return await this.crossrefInfo.getInfoByDoi(paperID);
                 case 'medbiorxivId':
-                    console.log("medbiorxivId");
-                    // TODO: medbiorxivId
-                    return {null: "null"};
+                    return await this.bmInfo.getInfoByBMId(paperID);
                 default:
                     throw new Error(`Unrecognized paperID: "${paperID}"`);
             }
         } catch (error) {
-            throw new Error(`Error in getPaperInfo: ${error}`);
+            throw new Error(`Error in getPaperInfo: ${error.message}`);
         }
     }
 }

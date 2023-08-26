@@ -23,7 +23,7 @@ class ArxivInfo {
             // TODO: get doi info
             return this.extractInfo(results.items[0]);
         } catch (error) {
-            throw new Error(`Error in getInfoByArxivId: ${error}`);
+            throw new Error(`Error in getInfoByArxivId: ${error.message}`);
         }
     }
 
