@@ -1,5 +1,6 @@
 import { TFile, Notice } from 'obsidian';
 import Spider from './spiders/spider';
+import type { Dict } from 'autoliter/types';
 
 
 async function getReplaceDict(m: RegExpExecArray[], file: TFile): Promise<{ [key: string]: string }> {
@@ -14,23 +15,24 @@ async function getReplaceDict(m: RegExpExecArray[], file: TFile): Promise<{ [key
     const progressNotice = new Notice(`Updating ${file.path}: ${completed}/${total}`);
 
     const paperIDs = m.map(literature => literature[0].split('{').pop()?.split('}')[0] || '');
-    const results: any = await Promise.all(paperIDs.map(paperID => {
+    const results: Dict[] = await Promise.all(paperIDs.map(async paperID => {
         try {
-            return spider.getPaperInfo(paperID);
+            let paperInfo = await spider.getPaperInfo(paperID);
+            paperInfo.id = paperID;
+            return paperInfo;
         } catch (error) {
-            new Notice(`Error in getPaperInfo: ${error}`);
-            return null;
+            return {id: paperID, error: `Error in getPaperInfo: ${error}`};
         }
     }));
-    results.forEach((result: any, index: number) => {
-        if (result === null) {
-            replaceDict[m[index][0]] = `${m[index][0]} **Not Correct, Check it**`;
+    results.forEach((result: Dict) => {
+        const {id} = result;
+        const origin_string = `- {${id}}`;
+        if (result.error) {
+            const e = result.error;
+            replaceDict[origin_string] = `${origin_string} **${e}**`;
         } else {
-            const literature = m[index][0];
-            const { title, author, pubDate, id } = result;
-            const date = new Date(pubDate);
-            const [year, month, day] = [date.getFullYear(), date.getMonth() + 1, date.getDate()];
-            replaceDict[literature] = `- **${title}**. ${author} et.al. **${year}-${month}-${day}**. [link](${id})`
+            const {title, author, journal, pubDate, url} = result;
+            replaceDict[origin_string] = `- **${title}**. ${author} et.al. **${journal}**, **${pubDate}**. [link](${url})`
         }
     });
     progressNotice.setMessage(`Updating ${file.path}: ${total}/${total}`);

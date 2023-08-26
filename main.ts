@@ -1,5 +1,5 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, Vault} from 'obsidian';
-import patternRecognizer from 'autoliter/patternRecognizer';
+import PatternRecognizer from 'autoliter/patternRecognizer';
 import {getReplaceDict} from 'autoliter/utils'
 
 // Remember to rename these classes and interfaces!
@@ -17,12 +17,12 @@ export default class AutoLiter extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
-		const paperRecognizer = new patternRecognizer(/- \{.{3,}\}/g); // g is must
+		const paperRecognizer = new PatternRecognizer(/- \{.{3,}\}/g); // g is must
 
 		// This creates an icon in the left ribbon.
 		const ribbonIconEl = this.addRibbonIcon('book-down', 'AutoLiter', async (evt: MouseEvent) => {
 			// Called when the user clicks the icon.
-			const notice = new Notice('start updating vault.');
+			new Notice('start updating vault.');
 			await Promise.all(this.app.vault.getMarkdownFiles().map(file => this.updateNote(file, paperRecognizer)));
 			new Notice("finish updating vault.");
 		});;
@@ -39,7 +39,7 @@ export default class AutoLiter extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	async updateNote(file: TFile, paperRecognizer: patternRecognizer) {
+	async updateNote(file: TFile, paperRecognizer: PatternRecognizer) {
 		const content = await this.app.vault.read(file);
 		const m = paperRecognizer.findAll(content);
 		if (m && m.length != 0) {

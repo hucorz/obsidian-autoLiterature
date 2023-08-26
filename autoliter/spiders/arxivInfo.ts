@@ -1,7 +1,8 @@
 
 import parser from 'rss-parser';
-import unidecode  from 'unidecode';
+import unidecode from 'unidecode';
 import { assert } from 'autoliter/utils';
+import type { Dict } from 'autoliter/types';
 
 class ArxivInfo {
     private base_url: string;
@@ -12,31 +13,29 @@ class ArxivInfo {
         this.feedParser = new parser();
     }
 
-    async getInfoByArxivId(arxivId: string): Promise<object> {
-        /*
-        Get the meta information by the given paper arxiv_id. 
-        Args:
-            arxivId (str): The arxiv Id           
-        Returns:
-            An object containing the paper information. 
-            {
-                "title": xxx,
-                "author": xxx,
-                "pubDate": xxx,
-                etc
-            } 
-        */
-        const params = "?search_query=id:" + encodeURIComponent(unidecode(arxivId));
+    async getInfoByArxivId(arxivId: string): Promise<Dict> {
+        // const params = "?search_query=id:" + encodeURIComponent(unidecode(arxivId));
+        const params = `?search_query=id:${arxivId}`;
         try {
             const results = await this.feedParser.parseURL(this.base_url + params);
             assert(results.items.length === 1, "ArxivId should return only one result");
             // use rss-parser cannot get the doi info
             // TODO: get doi info
-            const result = results.items[0];
-            return result;            
+            return this.extractInfo(results.items[0]);
         } catch (error) {
             throw new Error(`Error in getInfoByArxivId: ${error}`);
         }
+    }
+
+    extractInfo(data: any): Dict {
+        const title: string = data['title'];
+        const author: string = data['author'] || "No author";
+        const journal = "Arxiv";
+        const date = new Date(data['pubDate']);
+        const [year, month, day] = [date.getFullYear(), date.getMonth() + 1, date.getDate()];
+        const pubDate = `${year}-${month}-${day}`;
+        const url: string = data['link'];
+        return { title, author, journal, pubDate, url }
     }
 }
 
