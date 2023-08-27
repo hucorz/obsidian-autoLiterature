@@ -1,6 +1,8 @@
 # Obsidian AutoLiterature
 
-This is a simple Obsidian plugin designed to assist you in taking notes for your literature. Adapted from this [repository](https://github.com/wilmerwang/autoLiterature).
+Obsidian plugin designed to assist you in taking notes for your literature. Adapted from this [repository](https://github.com/wilmerwang/autoLiterature).
+
+这是一个 Obsidian 插件帮助你记录文献笔记。改编自 [repository](https://github.com/wilmerwang/autoLiterature).
 
 Welcome any suggestions.
 
@@ -12,9 +14,9 @@ This plugin has not been included in the official list yet, so it needs to be cl
 - turn on community plugins in obsidian
 - enable autoLiterature
 
-## screenShot
+## ScreenShot
 
-Currently, this plugin only supports arXiv IDs.
+This plugin supports arXiv IDs，bio，medRXiv，BioRXiv.
 
 This plugin will Auto-detection the string "- {xxx}".
 
