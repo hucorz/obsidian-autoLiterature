@@ -1,6 +1,7 @@
-import axios from "axios";
 import CrossrefInfo from "./crossrefInfo";
 import { Dict } from "autoliter/types";
+import {requestUrl} from 'obsidian'
+
 
 class BMInfo {
     private base_url: string;
@@ -15,9 +16,10 @@ class BMInfo {
         const urls = this.server.map(server => `${this.base_url}${server}/${bmId}`);
         for (let url of urls) {
             try {
-                const response = await axios.get(url);
-                if (response.data['collection'].length > 0) {
-                    const data = response.data['collection'][0];
+                // const response = await axios.get(url);
+                const response = await requestUrl(url).json; // user obsidian's requestUrl to avoid cors
+                if (response['collection'].length > 0) {
+                    const data = response['collection'][0];
                     if (data['published'] !== "NA") {
                         return new CrossrefInfo().getInfoByDoi(data['published']);
                     }

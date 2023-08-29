@@ -1,6 +1,6 @@
 {
 	"name": "autoLiterature",
-	"version": "1.0.8",
+	"version": "1.0.9",
 	"description": "Assist you in taking notes for your literature.",
 	"main": "main.js",
 	"scripts": {

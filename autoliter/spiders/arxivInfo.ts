@@ -1,8 +1,8 @@
 
 import parser from 'rss-parser';
-import unidecode from 'unidecode';
 import { assert } from 'autoliter/utils';
 import type { Dict } from 'autoliter/types';
+import {requestUrl} from 'obsidian'
 
 class ArxivInfo {
     private base_url: string;
@@ -14,14 +14,15 @@ class ArxivInfo {
     }
 
     async getInfoByArxivId(arxivId: string): Promise<Dict> {
-        // const params = "?search_query=id:" + encodeURIComponent(unidecode(arxivId));
         const params = `?search_query=id:${arxivId}`;
         try {
-            const results = await this.feedParser.parseURL(this.base_url + params);
-            assert(results.items.length === 1, "ArxivId should return only one result");
-            // use rss-parser cannot get the doi info
+            // const results = await this.feedParser.parseURL(this.base_url + params);
+            const respnse = await requestUrl(this.base_url + params);
+            const data = await this.feedParser.parseString(respnse.text);  // response format is xml
+            assert(data.items.length === 1, "ArxivId should return only one result");
             // TODO: get doi info
-            return this.extractInfo(results.items[0]);
+            // It seems that arxiv api can not get the doi info
+            return this.extractInfo(data.items[0]);
         } catch (error) {
             throw new Error(`Error in getInfoByArxivId: ${error.message}`);
         }
