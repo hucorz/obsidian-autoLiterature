@@ -1,3 +1,3 @@
-type Dict = { [key: string]: string | number | boolean};
+type Dict = { [key: string]: string | number | boolean };
 
 export type { Dict };

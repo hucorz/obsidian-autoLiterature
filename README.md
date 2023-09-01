@@ -8,7 +8,13 @@ Welcome any suggestions.
 
 ## How to use
 
-This plugin has not been included in the official list yet, so it needs to be cloned locally for usage.
+Download from Obsidian community plugins:
+
+- open settings
+- turn on community plugins and browse plugins
+- search `autoliterature` and install 
+
+Download source code:
 
 - clone this repo to the path: vault/.obsidian
 - turn on community plugins in obsidian
@@ -16,13 +22,34 @@ This plugin has not been included in the official list yet, so it needs to be cl
 
 ## ScreenShot
 
-This plugin supports arXiv IDs，bio，medRXiv，BioRXiv.
+This plugin supports arXiv ID，boi ID，medRXiv ID，BioRXiv ID.
 
 This plugin will Auto-detection the string "- {xxx}".
 
 
-When the note file includes "- {paper_id}", the information of that literature will be downloaded.
+When the note file includes "- {paper_id}", the information of that literature will replace.
 
-![](screenshot.gif)
+![](./imgs/screenshot.gif)
 
+## Settings
 
+**Output format**: let you customize your paperInfo foramt. 
+- ${title} will be replaced by paper's title
+- ${url}, ${author}, ${journal}, ${pubDate} as the same
+- \n means the new line, \t means the tab
+
+>Note: different themes will have different effects
+
+example1 (default setting):
+```
+- **${title}** ([link](${url}))\n\t- *${author} et.al.*\n\t- ${journal}\n\t- ${pubDate}
+```
+
+![Alt text](./imgs/format_example1.png)
+
+example2:
+```
+------\n**${title}** ([link](${url}))\n\t- *${author} et.al.*\n\t- ${journal}\n\t- ${pubDate}\n\n------\n
+```
+
+![Alt text](./imgs/format_example2.png)

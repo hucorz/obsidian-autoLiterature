@@ -1,5 +1,5 @@
 import type { Dict } from 'autoliter/types';
-import {requestUrl} from 'obsidian'
+import { requestUrl } from 'obsidian'
 
 // const HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:27.0) Gecko/20100101 Firefox/43.0'};
 
@@ -21,7 +21,7 @@ class CrossrefInfo {
         }
     }
 
-    extractInfo(data: any): Dict {     
+    extractInfo(data: any): Dict {
         const title: string = data['title'][0];
         const author: string = data['author'] && data['author'].length > 0 ? data['author'][0]['given'] : "No author";
         const journal = data['short-container-title']?.[0] || data['container-title']?.[0] || "No journal";

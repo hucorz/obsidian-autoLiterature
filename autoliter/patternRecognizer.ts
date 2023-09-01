@@ -12,9 +12,9 @@ class PatternRecognizer {
     findAll(input: string): RegExpExecArray[] | null {
         const matches: RegExpExecArray[] = [];
         let match: RegExpExecArray | null;
-      
+
         while ((match = this.pattern.exec(input)) !== null) {
-          matches.push(match);
+            matches.push(match);
         }
         return matches;
     }

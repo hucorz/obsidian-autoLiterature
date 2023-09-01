@@ -1,6 +1,6 @@
 import CrossrefInfo from "./crossrefInfo";
 import { Dict } from "autoliter/types";
-import {requestUrl} from 'obsidian'
+import { requestUrl } from 'obsidian'
 
 
 class BMInfo {

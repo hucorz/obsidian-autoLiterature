@@ -26,12 +26,12 @@ class Spider {
             return "medbiorxivId";
         } else if (identifier.match(/[0-9]{2}[0-1][0-9]\.[0-9]{3,}.*|.*\/[0-9]{2}[0-1][0-9]{4}/)) {
             return 'arxivId';
-        }else {
+        } else {
             return "unrecognized";
         }
     }
 
-    async getPaperInfo(paperID: string): Promise<Dict>{
+    async getPaperInfo(paperID: string): Promise<Dict> {
         /*
         paperID: the paper id like 2022.12345
         */

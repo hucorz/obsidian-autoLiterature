@@ -2,7 +2,7 @@
 import parser from 'rss-parser';
 import { assert } from 'autoliter/utils';
 import type { Dict } from 'autoliter/types';
-import {requestUrl} from 'obsidian'
+import { requestUrl } from 'obsidian'
 
 class ArxivInfo {
     private base_url: string;
