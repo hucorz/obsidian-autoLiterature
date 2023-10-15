@@ -17,7 +17,7 @@ class BMInfo {
         for (let url of urls) {
             try {
                 // const response = await axios.get(url);
-                const response = await requestUrl(url).json; // user obsidian's requestUrl to avoid cors
+                const response = await requestUrl(url).json; // use obsidian's requestUrl to avoid cors
                 if (response['collection'].length > 0) {
                     const data = response['collection'][0];
                     if (data['published'] !== "NA") {
@@ -26,7 +26,7 @@ class BMInfo {
                     return this.extractInfo(data);
                 }
             } catch (error) {
-                throw new Error(`Error in getInfoByBMxivId: ${error.message}`);
+                throw new Error(`Error in getInfoByBMxivId: ${error.message}(request url: ${url})`);
             }
         }
         throw new Error(`Error in getInfoByBMxivId: No posts found`);

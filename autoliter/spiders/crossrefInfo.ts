@@ -17,7 +17,7 @@ class CrossrefInfo {
             const response = await requestUrl(url).json; // user obsidian's requestUrl to avoid cors
             return this.extractInfo(response['message']);
         } catch (error) {
-            throw new Error(`Error in getInfoByDoi: ${error.message}`);
+            throw new Error(`Error in getInfoByDoi: ${error.message}(request url: ${url})`);
         }
     }
 

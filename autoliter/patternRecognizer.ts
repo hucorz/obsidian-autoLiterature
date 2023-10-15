@@ -1,8 +1,13 @@
 class PatternRecognizer {
-    private pattern: RegExp;
+    private _pattern: RegExp;
+    private _flags: string = 'g'
 
-    constructor(pattern: RegExp) {
-        this.pattern = pattern;
+    set pattern(pattern: string) {
+        this._pattern = new RegExp(pattern, this._flags);
+    }
+
+    constructor(pattern: string) {
+        this._pattern = new RegExp(pattern, this._flags);
     }
 
     match(input: string): RegExpMatchArray | null {
@@ -13,7 +18,7 @@ class PatternRecognizer {
         const matches: RegExpExecArray[] = [];
         let match: RegExpExecArray | null;
 
-        while ((match = this.pattern.exec(input)) !== null) {
+        while ((match = this._pattern.exec(input)) !== null) {
             matches.push(match);
         }
         return matches;

@@ -3,16 +3,13 @@ import Spider from './spiders/spider';
 import type { Dict } from 'autoliter/types';
 
 
-async function getReplaceDict(m: RegExpExecArray[], file: TFile, outputFormat: string): Promise<{ [key: string]: string }> {
+async function getReplaceDict(m: RegExpExecArray[], outputFormat: string): Promise<{ [key: string]: string }> {
     /*
     get replace dict in the form of {old: new} for the given md file
     */
     let replaceDict: { [key: string]: string } = {};
 
     const spider = new Spider();
-    const completed = 0;
-    const total = m.length;
-    const progressNotice = new Notice(`Updating ${file.path}: ${completed}/${total}`);
 
     const paperIDs = m.map(literature => literature[0].split('{').pop()?.split('}')[0] || '');
     const results: Dict[] = await Promise.all(paperIDs.map(async paperID => {
@@ -24,12 +21,12 @@ async function getReplaceDict(m: RegExpExecArray[], file: TFile, outputFormat: s
             return { id: paperID, error: `Error in getReplaceDict: ${error.message}` };
         }
     }));
-    results.forEach((result: Dict) => {
-        const { id } = result;
-        const origin_string = `- {${id}}`;
+    results.forEach((result: Dict, index) => {
+        const origin_string = m[index][0]; 
         if (result.error) {
-            const e = result.error;
-            replaceDict[origin_string] = `${origin_string} **${e}**`;
+            // const e = result.error;
+            // if error, do nothing, Notice will show the error message
+            replaceDict[origin_string] = `${origin_string}`;
         } else {
             const { title, author, journal, pubDate, url } = result;
             // replaceDict[origin_string] = `- **${title}** ([link](${url}))\n\t- *${author} et.al.*\n\t- ${journal}\n\t- ${pubDate}`
@@ -39,11 +36,8 @@ async function getReplaceDict(m: RegExpExecArray[], file: TFile, outputFormat: s
                 .replace("${journal}", journal as string)
                 .replace("${pubDate}", pubDate as string)
                 .replace("${url}", url as string)
-                .replace(/\\n/g, '\n')  // replace \n with newline, this step is must
-                .replace(/\\t/g, '\t');
         }
     });
-    progressNotice.setMessage(`Updating ${file.path}: ${total}/${total}`);
     return replaceDict;
 }
 

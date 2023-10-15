@@ -1,3 +1,4 @@
+import { Notice } from 'obsidian';
 import ArxivInfo from './arxivInfo';
 import CrossrefInfo from './crossrefInfo';
 import BMInfo from './bmInfo';
@@ -24,7 +25,7 @@ class Spider {
             return 'doi';
         } else if (identifier.match(/10\.1101\/.*/)) {
             return "medbiorxivId";
-        } else if (identifier.match(/[0-9]{2}[0-1][0-9]\.[0-9]{3,}.*|.*\/[0-9]{2}[0-1][0-9]{4}/)) {
+        } else if (identifier.match(/(arXiv:)?[0-9]{2}[0-1][0-9]\.[0-9]{3,}.*|.*\/[0-9]{2}[0-1][0-9]{4}/)) {
             return 'arxivId';
         } else {
             return "unrecognized";
@@ -48,6 +49,7 @@ class Spider {
                     throw new Error(`Unrecognized paperID: "${paperID}"`);
             }
         } catch (error) {
+            new Notice(`${error.message}`);
             throw new Error(`Error in getPaperInfo: ${error.message}`);
         }
     }

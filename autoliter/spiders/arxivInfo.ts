@@ -14,17 +14,22 @@ class ArxivInfo {
     }
 
     async getInfoByArxivId(arxivId: string): Promise<Dict> {
-        const params = `?search_query=id:${arxivId}`;
+        // if arxivID's prefix is "arXiv:", remove it
+        if (arxivId.startsWith("arXiv:")) {
+            arxivId = arxivId.slice(6);
+        }
+        const params = `?id_list=${arxivId}`;
         try {
             // const results = await this.feedParser.parseURL(this.base_url + params);
             const respnse = await requestUrl(this.base_url + params);
             const data = await this.feedParser.parseString(respnse.text);  // response format is xml
+            assert(data.items.length > 0, "ArxivId returns no result");
             assert(data.items.length === 1, "ArxivId should return only one result");
             // TODO: get doi info
             // It seems that arxiv api can not get the doi info
             return this.extractInfo(data.items[0]);
         } catch (error) {
-            throw new Error(`Error in getInfoByArxivId: ${error.message}`);
+            throw new Error(`Error in getInfoByArxivId: ${error.message}(request url: ${this.base_url + params})`);
         }
     }
 
