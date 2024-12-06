@@ -63,4 +63,50 @@ function assert(condition: any, message: string): asserts condition {
 	}
 }
 
-export { getReplaceDict, assert };
+function sanitizeFileName(fileName: string, pdfUrl: string, paperInfo: any, nameFormat: "title" | "id" | "custom", customFormat: string): string {
+	// 根据设置选择文件名格式
+	let name = '';
+	
+	switch (nameFormat) {
+		case 'id':
+			// 如果是 arXiv 链接，使用 arXiv ID
+			const arxivMatch = pdfUrl.match(/arxiv\.org\/pdf\/([\d\.]+)\.pdf/i);
+			if (arxivMatch) {
+				name = arxivMatch[1];
+			} else {
+				// 如果不是 arXiv，尝试使用 DOI 或其他标识符
+				name = paperInfo.id || paperInfo.title;
+			}
+			break;
+			
+		case 'custom':
+			// 使用自定义格式
+			name = customFormat;
+			// 替换所有变量
+			Object.entries(paperInfo).forEach(([key, value]) => {
+				name = name.replace(`\${${key}}`, value as string);
+			});
+			break;
+			
+		case 'title':
+		default:
+			name = paperInfo.title;
+			break;
+	}
+	
+	// 移除文件扩展名（如果有的话）
+	name = name.replace(/\.pdf$/i, '');
+	
+	// 替换非法字符
+	name = name.replace(/[/\\?%*:|"<>]/g, "-");
+	
+	// 限制文件名长度（Windows 建议单个文件名不超过 255 字符）
+	const maxLength = 100; // 留一些余地给路径
+	if (name.length > maxLength) {
+		name = name.slice(0, maxLength - 4); // -4 是为了给 .pdf 留空间
+	}
+	
+	return name + '.pdf';
+}
+
+export { getReplaceDict, assert, sanitizeFileName };

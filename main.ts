@@ -14,13 +14,16 @@ import {
 import PatternRecognizer from "autoliter/patternRecognizer";
 import { getReplaceDict } from "autoliter/utils";
 import { AutoLiterSettingTab } from "autoliter/settings";
+import { downloadPdf } from "autoliter/pdfManager";
 
 interface AutoLiterSettings {
 	outputFormat: string;
 	regExp: string;
 	autoDownloadPDF: boolean;
-	pdfDownloadPathCalculation: string;
+	pdfDownloadPathBase: string;
 	pdfDownloadPath: string;
+	pdfNameFormat: "title" | "id" | "custom";
+	customPdfNameFormat: string;
 }
 
 const DEFAULT_SETTINGS: AutoLiterSettings = {
@@ -29,8 +32,10 @@ const DEFAULT_SETTINGS: AutoLiterSettings = {
 		"- **${title}** ([link](${url}))\n\t- *${author} et.al.*\n\t- ${journal}\n\t- ${pubDate}",
 	regExp: "- {.{3,}}",
 	autoDownloadPDF: false,
-	pdfDownloadPathCalculation: "vault",
+	pdfDownloadPathBase: "vault",
 	pdfDownloadPath: "pdfs",
+	pdfNameFormat: "title",
+	customPdfNameFormat: "${title}",
 };
 
 export default class AutoLiter extends Plugin {
@@ -108,9 +113,14 @@ export default class AutoLiter extends Plugin {
 					data = data.replace(key, replaceDict[key] as string);
 					try {
 						this.settings.autoDownloadPDF &&
-							this.downloadPdf(
+							downloadPdf(
+								this.app,
 								pdfUrls[idx],
-								`${paperInfo[idx].title}.pdf`
+								paperInfo[idx],
+								this.settings.pdfNameFormat,
+								this.settings.customPdfNameFormat,
+								this.settings.pdfDownloadPathBase,
+								this.settings.pdfDownloadPath
 							);
 					} catch (error) {}
 				});
@@ -135,53 +145,6 @@ export default class AutoLiter extends Plugin {
 			});
 		}
 		return selection;
-	}
-
-	async downloadPdf(pdfUrl: string, fileName: string): Promise<void> {
-		try {
-			const response = await requestUrl({
-				url: pdfUrl,
-				method: "GET",
-				contentType: "application/pdf",
-			});
-
-			// 将 response 数据转换为 Uint8Array
-			const uint8Array = new Uint8Array(response.arrayBuffer);
-
-			const vault = this.app.vault;
-			let folderPath = null;
-			try {
-				if (this.settings.pdfDownloadPathCalculation === "mdFile") {
-					const activeFile = this.app.workspace.getActiveFile();
-					// activeFile 的文件夹
-					if (activeFile) {
-						const activeFileFolder = activeFile.path
-							.split("/")
-							.slice(0, -1)
-							.join("/");
-						folderPath = this.joinPaths(
-							activeFileFolder,
-							this.settings.pdfDownloadPath
-						);
-						await vault.createFolder(folderPath);
-					}
-				} else {
-					folderPath = this.settings.pdfDownloadPath;
-					await vault.createFolder(this.settings.pdfDownloadPath);
-				}
-			} catch (error) {
-				// Ignore if folder already exists
-			}
-
-			fileName = fileName.replace(/[/\\?%*:|"<>]/g, "-");
-			const filePath = this.joinPaths(folderPath as string, fileName);
-
-			// 保存文件到 vault 中
-			await vault.createBinary(filePath, uint8Array);
-			new Notice(`Downloaded PDF: ${fileName}`);
-		} catch (error) {
-			throw new Notice(`Error downloading PDF: ${error.message}`);
-		}
 	}
 
 	async loadSettings() {

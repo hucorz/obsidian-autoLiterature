@@ -6,3 +6,19 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+
+input.setting-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: var(--text-muted);
+    background-color: var(--background-modifier-form-field);
+}
+
+.setting-disabled .setting-item-control {
+    opacity: 0.5;
+}
+
+.setting-disabled .setting-item-name,
+.setting-disabled .setting-item-description {
+    color: var(--text-muted);
+}
